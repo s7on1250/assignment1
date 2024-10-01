@@ -1,0 +1,16 @@
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: code/deployment/DOCKERFILE
+    container_name: api_service
+    command: sh -c "python code/models/train.py && uvicorn code.deployment.api.api:app --host 0.0.0.0 --port 8000 --reload & streamlit run code/deployment/app/app.py --server.port 8051 & wait"
+    volumes:
+      - .:/app
+    depends_on:
+      []
+    ports:
+      - "8000:8000"
+      - "8051:8051"
+    environment:
+      - PYTHONUNBUFFERED=1
